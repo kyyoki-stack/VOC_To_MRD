@@ -39,7 +39,7 @@ def run_research(job_id, project, topic, codex):
         (project / 'docs/00-项目说明.md').write_text(f'# 用户之声研究\n\n主题：{topic}\n\n本次为网页提交的独立探索性调研；仅采集真实公开反馈。\n', encoding='utf-8')
         with LOCK:
             JOBS[job_id]['status'] = 'running'
-        command = [codex, 'exec', '--ephemeral', '--skip-git-repo-check', '--approve-for-me', '-C', str(project), '--color', 'never', '-o', str(project / 'docs/04-执行结果.md'), '-']
+        command = [codex, 'exec', '--ephemeral', '--skip-git-repo-check', '--approve-for-me', '--sandbox', 'workspace-write', '-C', str(project), '--color', 'never', '-o', str(project / 'docs/04-执行结果.md'), '-']
         # No shell interpolation; topic is passed as stdin, not an executable command.
         result = subprocess.run(command, input=prompt, text=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=1800)
         if result.returncode:

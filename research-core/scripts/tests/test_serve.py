@@ -61,6 +61,7 @@ class BackendTests(unittest.TestCase):
             args, kwargs = execute.call_args
             self.assertEqual(args[0][0:2], ['/test/codex', 'exec'])
             self.assertIn('--approve-for-me', args[0])
+            self.assertEqual(args[0][args[0].index('--sandbox') + 1], 'workspace-write')
             self.assertNotIn('danger-full-access', args[0])
             self.assertNotIn('测试主题; touch /tmp/never-run', args[0])
             self.assertNotIn('shell', kwargs)
