@@ -51,7 +51,33 @@ flowchart LR
     H --> I[HTML 结果与导出]
 ```
 
-## 本地运行
+## Docker 打开网页
+
+安装并启动Docker后，在项目目录执行：
+
+```bash
+docker compose up -d --build --wait
+```
+
+打开 **http://127.0.0.1:8780**。页面、匿名案例、原声筛选、洞察与报告下载都在容器内提供，不需要在宿主机启动Python服务。
+
+```bash
+docker compose ps
+docker compose logs --tail=50 web
+docker compose stop
+```
+
+8780被占用时，可设置其他发布端口：
+
+```bash
+VOC_PORT=8781 docker compose up -d --build --wait
+```
+
+此时打开`http://127.0.0.1:8781`。Compose只映射到宿主本机；研究文件写入命名卷，停止或重建容器不会删除卷，`docker compose down -v`会删除它。
+
+默认Python镜像可独立浏览案例，但没有Codex、模型登录或采集连接器，不能发起新调研。真实研究需要在容器内单独配置这些能力；不会自动继承Mac上的登录或Chrome会话。[Docker与真实采集边界](docs/deployment.md)
+
+## 不使用 Docker 的本地运行
 
 页面生成和服务使用 Python 3.9+ 标准库，没有额外 Python 依赖。真实调研还需要已登录、有模型使用权限的 Codex CLI，以及执行环境可用的网络和采集工具。
 
@@ -102,7 +128,7 @@ python3 -m unittest discover -s research-core/scripts/tests -v
 
 ## 当前运行边界
 
-后端只绑定本机，使用 Codex CLI 执行研究；每次建立独立目录，同时最多一个任务，最长30分钟。采集不到正文或渠道无法访问时保留失败说明，允许交付空结果。接口检测到 CLI 不等于模型、登录和所有渠道均可用。
+Python直接运行时后端只绑定本机；Docker内监听容器网络，Compose仍只向宿主本机发布。真实研究使用Codex CLI；每次建立独立目录，同时最多一个任务，最长30分钟。采集不到正文或渠道无法访问时保留失败说明，允许交付空结果。接口检测到CLI不等于模型、登录和所有渠道均可用。
 
 任务状态保存在内存，服务重启后不能恢复。预计时长为初步估计，实际耗时随渠道和模型变化。当前未提供多人账户、云端任务队列、持久化或计费，因此尚不是面向公众开放采集的生产服务。[架构说明](docs/architecture.md) · [部署说明](docs/deployment.md)
 

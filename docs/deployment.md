@@ -6,6 +6,18 @@
 
 静态托管支持查看、筛选、证据展开和下载。提交首页查询需要`/api/research`后端；后端不存在时页面会明确提示。此次GitHub发布仅发布项目源码和匿名案例，没有启用GitHub Pages或部署云端采集服务。
 
+## Docker网页服务
+
+执行`docker compose up -d --build --wait`，打开`http://127.0.0.1:8780`。Python运行环境、页面、匿名案例与报告都在镜像内；Dockerfile使用非root用户，Compose将8780仅发布到宿主本机。
+
+可以使用`VOC_PORT=8781 docker compose up -d --build --wait`改为8781。容器继续监听8780，`VOC_PUBLIC_PORT`同步浏览器发布端口，避免合法请求被Host／Origin校验拒绝。
+
+`/data/research-runs`写入命名卷，容器重建后保留文件；内存任务状态仍无法恢复。健康检查只检查HTTP服务响应，未配置Codex也应健康。不要用`docker compose down -v`保留研究文件，该选项会删除卷。
+
+默认镜像不包含Codex或渠道工具。浏览、筛选、查看证据和下载报告可独立使用；提交新研究会明确提示执行器未就绪。要在容器内执行真实研究，需要另行安装兼容的Codex CLI、配置模型权限和可访问渠道，并在容器环境完成真实采集验证。不要把Mac账号、HOME或Chrome配置自动打包进镜像。
+
+Docker配置参考：[Dockerfile指令](https://docs.docker.com/reference/dockerfile/)、[Compose服务配置](https://docs.docker.com/reference/compose-file/services/)。
+
 ## 本机真实研究
 
 运行`python3 app.py`，使用本机Codex账号、模型权限和已配置工具。服务只绑定127.0.0.1；默认8780端口可避免与既有8768页面冲突。新结果写入被Git忽略的`research-runs/`。

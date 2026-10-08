@@ -11,7 +11,7 @@
 | 模块 | 文件 | 责任 |
 |---|---|---|
 | 页面 | `web/index.html` | 首页输入、结果视图、筛选、下载、轮询任务状态 |
-| 入口 | `app.py` | 启动本机网站，默认8780端口 |
+| 入口 | `app.py`、`Dockerfile`、`compose.yaml` | Python直接运行或Docker启动，默认发布8780端口 |
 | 任务服务 | `research-core/scripts/serve.py` | 校验请求，建立独立项目，调用Codex，返回完成／空结果／失败状态 |
 | 研究工作流 | `research-core/SKILL.md`、`references/` | 采集、审核、AI分析、证据追溯和MRD规则 |
 | 渲染器 | `research-core/scripts/render.py` | 校验字段、ID、来源、日期和需求证据关联，生成内嵌数据的HTML |
@@ -42,5 +42,7 @@ docs/03-洞察总结.md
 - `GET /runs/<id>/research.html`：读取已生成的结果页。
 
 服务校验本机Host、Origin和提交令牌；主题作为数据通过stdin传给Codex，不通过Shell执行。使用自动审批与workspace-write沙箱，不关闭审批或沙箱。并发为1，单任务超时30分钟，研究状态存于内存。
+
+Python默认绑定127.0.0.1；Docker通过`--host 0.0.0.0`监听容器网络，并仅映射宿主127.0.0.1。`VOC_PUBLIC_PORT`用于端口映射后浏览器的Host/Origin校验。健康检查只证明网页服务可以响应，不要求研究执行器已配置。
 
 运行时研究目录、登录、原始抓取日志和账号配置不提交。自带案例仅含用户授权发布的匿名记录、分析及来源；历史报告中的相对文件名保留为研究来源记录，案例导出统一使用上述契约文件。

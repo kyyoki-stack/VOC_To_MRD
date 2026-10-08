@@ -56,7 +56,7 @@ def run_research(job_id, project, topic, codex):
             JOBS[job_id].update(status='failed', message=str(exc)[:220])
 
 
-def make_handler(root, runs, codex, token):
+def make_handler(root, runs, codex, token, public_port=None):
     class Handler(SimpleHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, directory=str(root), **kwargs)
@@ -71,11 +71,15 @@ def make_handler(root, runs, codex, token):
             self.wfile.write(body)
 
         def trusted_request(self):
+            ports = {self.server.server_port}
+            if public_port is not None:
+                ports.add(public_port)
+            allowed_hosts = {f'{name}:{port}' for name in ('127.0.0.1', 'localhost') for port in ports}
             host = self.headers.get('Host', '')
-            if host not in {f'127.0.0.1:{self.server.server_port}', f'localhost:{self.server.server_port}'}:
+            if host not in allowed_hosts:
                 return False
             origin = self.headers.get('Origin')
-            return not origin or origin in {f'http://127.0.0.1:{self.server.server_port}', f'http://localhost:{self.server.server_port}'}
+            return not origin or origin in {f'http://{host}' for host in allowed_hosts}
 
         def do_POST(self):
             if not self.trusted_request() or self.headers.get('X-Research-Token') != token:
@@ -143,14 +147,18 @@ def main():
     parser.add_argument('--root', type=Path, required=True, help='Directory with index.html')
     parser.add_argument('--runs', type=Path, required=True, help='Isolated research project directory')
     parser.add_argument('--port', type=int, default=8768)
+    parser.add_argument('--host', choices=['127.0.0.1', '0.0.0.0'], default='127.0.0.1')
+    parser.add_argument('--public-port', type=int)
     args = parser.parse_args()
     root, runs = args.root.resolve(), args.runs.resolve()
     if not (root / 'index.html').is_file():
         parser.error('root必须包含index.html')
     runs.mkdir(parents=True, exist_ok=True)
-    handler = make_handler(root, runs, shutil.which('codex'), uuid.uuid4().hex)
-    server = ThreadingHTTPServer(('127.0.0.1', args.port), handler)
-    print(f'用户之声研究服务：http://127.0.0.1:{args.port}', flush=True)
+    if args.public_port is not None and not 1 <= args.public_port <= 65535:
+        parser.error('public-port必须为1–65535')
+    handler = make_handler(root, runs, shutil.which('codex'), uuid.uuid4().hex, args.public_port)
+    server = ThreadingHTTPServer((args.host, args.port), handler)
+    print(f'用户之声研究服务：http://127.0.0.1:{args.public_port or server.server_port}', flush=True)
     server.serve_forever()
 
 

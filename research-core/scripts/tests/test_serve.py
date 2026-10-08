@@ -43,6 +43,31 @@ class BackendTests(unittest.TestCase):
             with self.assertRaises(HTTPError) as error: self.post({'topic': '测试主题'}, **kwargs)
             self.assertEqual(error.exception.code, 403)
 
+    def test_unknown_host_rejected(self):
+        with self.assertRaises(HTTPError) as error:
+            urlopen(Request(self.url + '/api/health', headers={'Host': 'external.example'}))
+        self.assertEqual(error.exception.code, 403)
+
+    def test_docker_remapped_port_and_origin(self):
+        self.server.RequestHandlerClass = serve.make_handler(self.root, self.root / 'runs', None, 'test-token', public_port=8781)
+        headers = {'Host': 'localhost:8781', 'Origin': 'http://localhost:8781'}
+        health = json.load(urlopen(Request(self.url + '/api/health', headers=headers)))
+        self.assertFalse(health['available'])
+        for field, value in [('Host', 'localhost:9999'), ('Origin', 'https://external.example')]:
+            invalid = dict(headers)
+            invalid[field] = value
+            with self.assertRaises(HTTPError) as error:
+                urlopen(Request(self.url + '/api/health', headers=invalid))
+            self.assertEqual(error.exception.code, 403)
+
+    def test_missing_executor_does_not_queue_fake_research(self):
+        self.server.RequestHandlerClass = serve.make_handler(self.root, self.root / 'runs', None, 'test-token')
+        self.assertFalse(json.load(urlopen(self.url + '/api/health'))['available'])
+        with self.assertRaises(HTTPError) as error:
+            self.post({'topic': '测试研究主题'})
+        self.assertEqual(error.exception.code, 503)
+        self.assertFalse(serve.JOBS)
+
     def test_new_topic_dispatch_and_duplicate_block(self):
         with patch.object(serve, 'run_research') as worker:
             job = json.load(self.post({'topic': '测试主题'}))

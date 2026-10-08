@@ -1,0 +1,20 @@
+name: voc-to-mrd
+services:
+  web:
+    build: .
+    image: voc-to-mrd:local
+    ports:
+      - "127.0.0.1:${VOC_PORT:-8780}:8780"
+    environment:
+      VOC_PUBLIC_PORT: "${VOC_PORT:-8780}"
+    volumes:
+      - research-data:/data
+    restart: unless-stopped
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+volumes:
+  research-data:

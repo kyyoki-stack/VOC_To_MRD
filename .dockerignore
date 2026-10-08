@@ -1,0 +1,14 @@
+.git
+.env
+.env.*
+.codex
+.agents
+.venv
+venv
+research-runs
+**/__pycache__
+**/*.pyc
+**/*.log
+**/.DS_Store
+auth.json
+cookies*.json
