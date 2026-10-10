@@ -22,13 +22,15 @@ GitHub Pages是静态展示层；在线采集、归类、AI洞察、报告和MRD
 
 `/data/research-runs`写入命名卷，容器重建后保留文件；内存任务状态仍无法恢复。健康检查只检查HTTP服务响应，未配置Codex也应健康。不要用`docker compose down -v`保留研究文件，该选项会删除卷。
 
-默认镜像不包含Codex或渠道工具。浏览、筛选、查看证据和下载报告可独立使用；提交新研究会明确提示执行器未就绪。要在容器内执行真实研究，需要另行安装兼容的Codex CLI、配置模型权限和可访问渠道，并在容器环境完成真实采集验证。不要把Mac账号、HOME或Chrome配置自动打包进镜像。
+默认镜像包含 DeepSeek 服务端适配器，Compose 默认 `VOC_RESEARCH_BACKEND=deepseek`。在本机 `.env` 中填写密钥及真实评论采集服务配置后重建容器；详见 [DeepSeek配置与接口契约](deepseek.md)。缺少配置时提交新研究会明确提示原因。浏览、筛选、查看证据和下载示例报告仍可独立使用。
+
+镜像不包含 Codex 或平台采集工具；模型 API 本身不获取平台评论。选择 `VOC_RESEARCH_BACKEND=codex` 时仍需自行准备容器内的 CLI、登录和渠道能力。不要把 Mac 账号、HOME 或 Chrome 配置打包进镜像。
 
 Docker配置参考：[Dockerfile指令](https://docs.docker.com/reference/dockerfile/)、[Compose服务配置](https://docs.docker.com/reference/compose-file/services/)。
 
 ## 本机真实研究
 
-运行`python3 app.py`，使用本机Codex账号、模型权限和已配置工具。服务只绑定127.0.0.1；默认8780端口可避免与既有8768页面冲突。新结果写入被Git忽略的`research-runs/`。
+运行`python3 app.py`，读取本项目 `.env` 中选择的研究后端；未配置时沿用本机 Codex 模式。服务只绑定127.0.0.1；默认8780端口可避免与既有8768页面冲突。新结果写入被Git忽略的`research-runs/`。
 
 不要把监听地址直接改成公网并依赖本机账号开放服务。当前令牌是本机请求保护，并非多用户登录或授权系统。
 

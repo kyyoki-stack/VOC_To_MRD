@@ -1,6 +1,7 @@
 """Backend contract tests. Fixtures are synthetic and are never research evidence."""
 import csv
 import json
+import os
 import sys
 import tempfile
 import threading
@@ -86,6 +87,33 @@ class BackendTests(unittest.TestCase):
             self.assertEqual(json.load(urlopen(self.url + '/api/research/' + job['id']))['topic'], '测试主题')
             with self.assertRaises(HTTPError) as error: self.post({'topic': '另一主题'})
             self.assertEqual(error.exception.code, 409)
+
+    def test_deepseek_missing_configuration_does_not_queue_and_never_exposes_key(self):
+        self.server.RequestHandlerClass = serve.make_handler(self.root, self.root / 'runs', None, 'test-token', backend='deepseek')
+        for key in ['', 'synthetic-secret']:
+            with patch.dict(os.environ, {'DEEPSEEK_API_KEY': key, 'DEEPSEEK_MODEL': 'deepseek-v4-pro', 'VOC_COLLECTOR_URL': ''}):
+                health = json.load(urlopen(self.url + '/api/health'))
+                self.assertEqual(health['backend'], 'deepseek')
+                self.assertFalse(health['available'])
+                self.assertNotIn('synthetic-secret', json.dumps(health))
+                with self.assertRaises(HTTPError) as error:
+                    self.post({'topic': '合成研究测试'})
+                self.assertEqual(error.exception.code, 503)
+        self.assertFalse(serve.JOBS)
+
+    def test_deepseek_dispatch_preserves_phase_and_sanitizes_unexpected_errors(self):
+        self.server.RequestHandlerClass = serve.make_handler(self.root, self.root / 'runs', None, 'test-token', backend='deepseek')
+        with patch.dict(os.environ, {'DEEPSEEK_API_KEY': 'synthetic-secret', 'DEEPSEEK_MODEL': 'deepseek-v4-pro', 'VOC_COLLECTOR_URL': 'https://collector.example/comments'}), patch.object(serve, 'run_research') as worker:
+            job = json.load(self.post({'topic': '合成研究测试'}))
+            worker.assert_called_once()
+            self.assertEqual(worker.call_args.args[-1], 'deepseek')
+        ident = job['id']
+        serve.JOBS[ident].update(status='running', message='DeepSeek 正在撰写 MRD')
+        self.assertEqual(json.load(urlopen(self.url + '/api/research/' + ident))['message'], 'DeepSeek 正在撰写 MRD')
+        with patch.object(serve.deepseek_research, 'run', side_effect=ValueError('synthetic-secret')):
+            serve.run_research(ident, self.root / 'runs' / ident, '合成测试', None, 'deepseek')
+        self.assertEqual(serve.JOBS[ident]['status'], 'failed')
+        self.assertNotIn('synthetic-secret', serve.JOBS[ident]['message'])
 
     def test_worker_arguments_and_failure_status(self):
         ident = 'a' * 32

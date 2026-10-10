@@ -237,7 +237,7 @@ if(document.body.dataset.execution==='static')researchStatus.textContent=staticR
 else if(isHomepage){
  researchStatus.textContent='输入产品与研究主题，按回车开始';
  fetch('/api/health',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(health=>{
-  if(!health?.available)researchStatus.textContent='研究执行器尚未配置；目前可查看研究示例。';
+  if(!health?.available)researchStatus.textContent=health?.message||'研究执行器尚未配置；目前可查看研究示例。';
  }).catch(()=>{researchStatus.textContent='当前页面尚未连接采集服务；可先查看研究示例。'});
 }
 
@@ -259,7 +259,7 @@ researchForm.addEventListener('submit',async event=>{
   const healthResponse=await fetch('/api/health',{cache:'no-store'});
   if(!healthResponse.ok)throw Error('当前是静态页面，请启动用户之声本地研究服务后再提交');
   let health;try{health=await healthResponse.json()}catch{throw Error('当前页面未连接研究后端，请启动本地研究服务')}
-  if(!health.available)throw Error('本机Codex CLI尚未就绪，无法执行真实采集');
+  if(!health.available)throw Error(health.message||'研究执行器尚未就绪，无法执行真实采集');
   const response=await fetch('/api/research',{method:'POST',headers:{'Content-Type':'application/json','X-Research-Token':health.token},body:JSON.stringify({topic})});
   const job=await response.json();if(!response.ok)throw Error(job.error||'任务提交失败');
   researchStartedAt=Date.now();updateResearchTime();researchClock=setInterval(updateResearchTime,1000);researchStatus.textContent='已提交主题，正在采集与分析…';

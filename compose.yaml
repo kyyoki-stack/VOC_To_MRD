@@ -7,6 +7,11 @@ services:
       - "127.0.0.1:${VOC_PORT:-8780}:8780"
     environment:
       VOC_PUBLIC_PORT: "${VOC_PORT:-8780}"
+      VOC_RESEARCH_BACKEND: "${VOC_RESEARCH_BACKEND:-deepseek}"
+      DEEPSEEK_API_KEY: "${DEEPSEEK_API_KEY:-}"
+      DEEPSEEK_MODEL: "${DEEPSEEK_MODEL:-deepseek-v4-pro}"
+      VOC_COLLECTOR_URL: "${VOC_COLLECTOR_URL:-}"
+      VOC_COLLECTOR_TOKEN: "${VOC_COLLECTOR_TOKEN:-}"
     volumes:
       - research-data:/data
     restart: unless-stopped

@@ -18,6 +18,8 @@ def main():
     args = parser.parse_args()
     scripts = base / 'research-core/scripts'
     sys.path.insert(0, str(scripts))
+    from settings import load_env
+    load_env(base / '.env')
     sys.argv = [str(scripts / 'serve.py'), '--root', str(base / 'web'),
                 '--runs', str(args.runs.resolve()), '--port', str(args.port), '--host', args.host]
     if args.public_port is not None:
