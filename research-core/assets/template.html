@@ -125,13 +125,19 @@ header{top:4.65vh;left:3.4%;width:93.5%;padding:0;background:transparent;border-
 .research-time:empty{display:none}
 
 .report-findings{margin-top:40px;padding-top:28px;border-top:1px solid var(--line)}.report-findings h3{font-family:'Songti SC','STSong',serif;font-size:26px;font-weight:400;margin:0 0 24px}.report-findings ol{margin:0;padding-left:24px}.report-findings li{padding:0 0 22px 8px;line-height:1.9}.report-findings strong{font-weight:500}.report-findings p{font-size:14px;color:var(--muted);margin:8px 0}.report-findings small{display:block;font-size:11px;color:var(--muted);line-height:1.8}
+
+.home-links{margin:42px auto 0;text-align:center}.home-links:empty{display:none}
+.example-note{font-size:12px;line-height:1.9;color:var(--muted);margin:30px auto 0;max-width:700px}
+body[data-page="home"] #download,body[data-page="home"] #voice-controls,body[data-page="home"] .audit,body[data-page="home"] footer{display:none!important}
+body[data-page="home"] .layout{min-height:240px}body[data-page="home"] .list{columns:auto}.home-empty{text-align:center;max-width:680px;margin:0 auto 100px;color:var(--muted);line-height:2}
+.home-empty h3{font-family:"Songti SC",serif;font-size:28px;font-weight:400;color:var(--ink)}.home-empty a{display:inline-block;margin-top:16px;text-underline-offset:5px}
 </style>
 </head>
 <body>
 <svg width="0" height="0" aria-hidden="true" style="position:absolute;pointer-events:none"><defs><filter id="halo-organic" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".006 .009" numOctaves="3" seed="12" result="cloud"/><feDisplacementMap in="SourceGraphic" in2="cloud" scale="65" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
 <header><nav class="center-nav" aria-label="主导航"><a href="#voices"><i class="dot what"></i>原声</a><a href="#research-insights" id="nav-insights"><i class="dot why"></i>洞察</a><a href="#research-results" id="nav-reports"><i class="dot how"></i>报告</a></nav><nav class="header-nav"><button class="button" id="download">导出数据</button></nav></header>
-<section class="landing" aria-label="用户之声首页"><svg class="halo-art" viewBox="0 0 1000 1000" aria-hidden="true"><defs><filter id="halo-soft" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".008" numOctaves="3" seed="12" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="26" xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur stdDeviation="23"/></filter><linearGradient id="halo-colors" x1="0" y1="0" x2="1" y2=".65"><stop offset="0" stop-color="#ffbd98"/><stop offset=".26" stop-color="#efa5ba"/><stop offset=".5" stop-color="#c5add7"/><stop offset=".75" stop-color="#e9c0bc"/><stop offset="1" stop-color="#f5ce9f"/></linearGradient><linearGradient id="halo-fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="white"/><stop offset=".72" stop-color="white"/><stop offset="1" stop-color="#555"/></linearGradient><mask id="halo-opacity"><rect width="1000" height="1000" fill="url(#halo-fade)"/></mask></defs><g filter="url(#halo-soft)"><circle cx="500" cy="500" r="348" fill="none" stroke="url(#halo-colors)" stroke-width="110"/><path d="M155 455 A348 348 0 0 1 505 152" fill="none" stroke="#ffc29e" stroke-width="80" opacity=".6"/><path d="M225 725 A348 348 0 0 0 525 847" fill="none" stroke="#cfa9d9" stroke-width="90" opacity=".6"/></g></svg><div class="hero-center"><form class="hero-bubble" id="research-query-form" aria-label="发起真实用户之声调研"><div class="hero-query-field"><input class="hero-query" id="research-query" name="topic" type="text" placeholder=" " aria-label="研究主题，按回车开始真实评论采集" maxlength="200" autocomplete="off" required><span class="hero-query-hint" aria-hidden="true"><span>用户原声</span></span></div></form><div class="research-status" id="research-status" role="status" aria-live="polite"></div><div class="research-time" id="research-time" role="timer" aria-live="off"></div></div></section>
-<section class="skill-overview" id="research-insights"><span id="voices" class="results-anchor" aria-hidden="true"></span><div class="eyebrow">用户之声研究</div><h2>把真实用户反馈，变成有依据的产品判断。</h2><div class="view-switch" id="research-results" role="group" aria-label="结果视图"><button data-view="voices" aria-pressed="true">原声库</button><button data-view="insights" aria-pressed="false">需求洞察</button><button data-view="reports" aria-pressed="false">研究报告</button></div></section><main class="layout"><aside><div id="voice-controls"><div class="toolbar"><input id="search" aria-label="搜索已采集数据" type="search" placeholder="搜索已采集的反馈、产品或需求"></div><section class="channel-panel"><label>按渠道查看</label><div id="platform" class="filter-options" role="group" aria-label="渠道"><button data-value="" aria-pressed="true">全部渠道</button></div><p id="channel-summary" aria-live="polite"></p></section><p class="count" id="count" aria-live="polite"></p></div><div class="list" id="list"></div><div id="insights"></div><div id="reports" hidden><p>数据报告帮助你看清用户反馈与证据；MRD将这些发现转成需求优先级、范围与验证计划。</p><div class="actions"><button class="button" data-report="report">下载数据报告</button><button class="button" data-report="mrd">下载 MRD</button></div><section class="report-findings" id="report-findings" aria-label="简短研究结论"></section></div></aside><article class="detail" id="detail" aria-label="评价详情"></article></main>
+<section class="landing" aria-label="用户之声首页"><svg class="halo-art" viewBox="0 0 1000 1000" aria-hidden="true"><defs><filter id="halo-soft" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".008" numOctaves="3" seed="12" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="26" xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur stdDeviation="23"/></filter><linearGradient id="halo-colors" x1="0" y1="0" x2="1" y2=".65"><stop offset="0" stop-color="#ffbd98"/><stop offset=".26" stop-color="#efa5ba"/><stop offset=".5" stop-color="#c5add7"/><stop offset=".75" stop-color="#e9c0bc"/><stop offset="1" stop-color="#f5ce9f"/></linearGradient><linearGradient id="halo-fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="white"/><stop offset=".72" stop-color="white"/><stop offset="1" stop-color="#555"/></linearGradient><mask id="halo-opacity"><rect width="1000" height="1000" fill="url(#halo-fade)"/></mask></defs><g filter="url(#halo-soft)"><circle cx="500" cy="500" r="348" fill="none" stroke="url(#halo-colors)" stroke-width="110"/><path d="M155 455 A348 348 0 0 1 505 152" fill="none" stroke="#ffc29e" stroke-width="80" opacity=".6"/><path d="M225 725 A348 348 0 0 0 525 847" fill="none" stroke="#cfa9d9" stroke-width="90" opacity=".6"/></g></svg><div class="hero-center"><form class="hero-bubble" id="research-query-form" aria-label="发起真实用户之声调研"><div class="hero-query-field"><input class="hero-query" id="research-query" name="topic" type="text" placeholder=" " aria-label="研究主题，按回车开始真实评论采集" maxlength="200" autocomplete="off" required><span class="hero-query-hint" aria-hidden="true"><span>用户原声</span></span></div></form><div class="research-status" id="research-status" role="status" aria-live="polite"></div><div class="research-time" id="research-time" role="timer" aria-live="off"></div><div class="home-links"><!-- PAGE_LINKS --></div></div></section>
+<section class="skill-overview" id="research-insights"><span id="voices" class="results-anchor" aria-hidden="true"></span><div class="eyebrow">用户之声研究</div><!-- PAGE_CONTEXT --><h2>把真实用户反馈，变成有依据的产品判断。</h2><div class="view-switch" id="research-results" role="group" aria-label="结果视图"><button data-view="voices" aria-pressed="true">原声库</button><button data-view="insights" aria-pressed="false">需求洞察</button><button data-view="reports" aria-pressed="false">研究报告</button></div></section><main class="layout"><aside><div id="voice-controls"><div class="toolbar"><input id="search" aria-label="搜索已采集数据" type="search" placeholder="搜索已采集的反馈、产品或需求"></div><section class="channel-panel"><label>按渠道查看</label><div id="platform" class="filter-options" role="group" aria-label="渠道"><button data-value="" aria-pressed="true">全部渠道</button></div><p id="channel-summary" aria-live="polite"></p></section><p class="count" id="count" aria-live="polite"></p></div><div class="list" id="list"></div><div id="insights"></div><div id="reports" hidden><p>数据报告帮助你看清用户反馈与证据；MRD将这些发现转成需求优先级、范围与验证计划。</p><div class="actions"><button class="button" data-report="report">下载数据报告</button><button class="button" data-report="mrd">下载 MRD</button></div><section class="report-findings" id="report-findings" aria-label="简短研究结论"></section></div></aside><article class="detail" id="detail" aria-label="评价详情"></article></main>
 <section class="audit" id="research-notes"><details><summary>查看渠道覆盖、失败与筛选记录</summary><p>以下记录本次研究的渠道访问结果与筛选决定。统计单位为反馈记录；用户身份、时间和版本的核验范围详见数据报告。</p><div class="audit-scroll"><table class="audit-table"><thead><tr><th>来源</th><th>获取结果</th><th>筛选决定</th><th>关联原声</th></tr></thead><tbody id="audit-table"></tbody></table></div></details></section>
 <footer>本批为目的性选取的少量用户自述，不代表全部车主，不用于计算满意度或故障率。车型与软件代际不同，不能直接据此判断最新 Agent 整体表现。</footer>
 <script id="need-data" type="application/json">__NEED_DATA__</script><script id="report-data" type="application/json">__REPORT_DATA__</script><script id="audit-data" type="application/json">__AUDIT_DATA__</script><script id="data" type="application/json">__REVIEW_DATA__</script>
@@ -140,6 +146,7 @@ const rows=JSON.parse(document.getElementById('data').textContent);
 const needs=JSON.parse(document.getElementById('need-data').textContent);
 const reports=JSON.parse(document.getElementById('report-data').textContent);
 const summary=__SUMMARY_DATA__;
+const isHomepage=document.body.dataset.page==='home';
 let currentView='voices';
 const eligible=rows.filter(r=>r.relevance==='相关');
 const $=id=>document.getElementById(id);
@@ -160,6 +167,14 @@ function detail(r){
  $('copy').onclick=async()=>{const txt=`${r.sample_id}｜${r.model}\n“${r.quote}”\n${r.source_url}\n局限：${r.limitations}`;try{await navigator.clipboard.writeText(txt);$('copy-status').textContent='已复制'}catch{$('copy-status').textContent='复制未成功，请从页面选择文字复制'}};
 }
 function render(){
+ if(isHomepage){
+  $('voice-controls').hidden=true;$('list').hidden=false;$('insights').hidden=true;$('reports').hidden=true;
+  const labels={voices:'原声库',insights:'需求洞察',reports:'研究报告'};
+  $('list').innerHTML=`<div class="home-empty"><h3>${labels[currentView]}，从一个研究主题开始。</h3><p>输入产品与关注的问题，收集真实反馈，再形成洞察、报告与 MRD。</p><a href="examples/cockpit.html#${currentView==='insights'?'research-insights':currentView==='reports'?'research-results':'voices'}">查看已有研究示例 ↗</a></div>`;
+  for(const b of document.querySelectorAll('[data-view]'))b.setAttribute('aria-pressed',String(b.dataset.view===currentView));
+  return;
+ }
+
  for(const id of filterIds)for(const b of $(id).querySelectorAll('button'))b.setAttribute('aria-pressed',String(b.dataset.value===$(id).value));
  const collected=rows.filter(r=>!$('platform').value||r.platform===$('platform').value);
  const channelRows=collected.filter(r=>r.relevance==='相关');
@@ -217,6 +232,15 @@ const researchInput=document.getElementById('research-query');
 const researchStatus=document.getElementById('research-status');
 const researchTime=document.getElementById('research-time');
 let researchStartedAt=0,researchClock;
+const staticResearchMessage='在线采集服务尚未配置；目前可查看研究示例。';
+if(document.body.dataset.execution==='static')researchStatus.textContent=staticResearchMessage;
+else if(isHomepage){
+ researchStatus.textContent='输入产品与研究主题，按回车开始';
+ fetch('/api/health',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(health=>{
+  if(!health?.available)researchStatus.textContent='研究执行器尚未配置；目前可查看研究示例。';
+ }).catch(()=>{researchStatus.textContent='当前页面尚未连接采集服务；可先查看研究示例。'});
+}
+
 function updateResearchTime(){
  if(!researchStartedAt)return;
  const elapsed=Math.max(0,Math.floor((Date.now()-researchStartedAt)/1000));
@@ -227,6 +251,7 @@ function updateResearchTime(){
 researchForm.addEventListener('submit',async event=>{
  event.preventDefault();
  const topic=researchInput.value.trim();
+ if(document.body.dataset.execution==='static'){researchStatus.textContent=staticResearchMessage;return;}
  if(topic.length<2){researchStatus.textContent='请输入具体的产品或研究主题';researchInput.focus();return}
  researchInput.disabled=true;researchForm.setAttribute('aria-busy','true');researchStatus.textContent='正在连接真实采集服务…';researchTime.textContent='';researchStartedAt=0;clearInterval(researchClock);
  const finish=()=>{clearInterval(researchClock);researchInput.disabled=false;researchForm.setAttribute('aria-busy','false');if(researchStartedAt){const elapsed=Math.max(0,Math.floor((Date.now()-researchStartedAt)/1000));researchTime.textContent='已用时 '+Math.floor(elapsed/60)+' 分 '+elapsed%60+' 秒'}};

@@ -13,3 +13,4 @@ auth.json
 cookies*.json
 *.sqlite*
 *.zip
+dist/

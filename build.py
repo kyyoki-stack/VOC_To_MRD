@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the anonymous cockpit example, or check that its snapshot is current."""
+"""Build a generic homepage and a separate anonymous research example."""
 import argparse
 import importlib.util
 import json
@@ -34,23 +34,48 @@ def build_page():
     page, replaced = re.subn(pattern, replace, page, count=1, flags=re.S)
     if replaced != 1:
         raise ValueError('页面缺少报告数据')
-    return page
+    return page.replace('<body>', '<body data-page="example" data-execution="local">', 1).replace(
+        '<!-- PAGE_LINKS -->', '<a class="hero-link" href="../index.html">返回通用首页 ↗</a>', 1
+    ).replace('<!-- PAGE_CONTEXT -->', '<p class="example-note">研究示例 · 既有匿名座舱数据，包含多个品牌与渠道，非本次新采集。</p>', 1)
+
+
+def build_homepage():
+    page = (BASE / 'research-core/assets/template.html').read_text(encoding='utf-8')
+    replacements = {
+        '__REVIEW_DATA__': '[]', '__NEED_DATA__': '[]', '__AUDIT_DATA__': '[]',
+        '__REPORT_DATA__': renderer.encode({'report': '', 'mrd': ''}),
+        '__SUMMARY_DATA__': renderer.encode({'heading': '', 'text': ''}),
+        '__RESEARCH_TITLE__': 'VOC_To_MRD · 用户原声',
+    }
+    page = re.sub('|'.join(map(re.escape, replacements)), lambda m: replacements[m.group()], page)
+    return page.replace('<body>', '<body data-page="home" data-execution="local">', 1).replace(
+        '<!-- PAGE_LINKS -->', '<a class="hero-link" href="examples/cockpit.html#voices">查看座舱研究示例 ↗</a>', 1
+    ).replace('<!-- PAGE_CONTEXT -->', '', 1)
+
+
+def build_pages(static=False):
+    pages = {'index.html': build_homepage(), 'examples/cockpit.html': build_page()}
+    if static:
+        pages = {path: page.replace('data-execution="local"', 'data-execution="static"', 1)
+                 for path, page in pages.items()}
+    return pages
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true')
+    parser.add_argument('--static', action='store_true', help='Build public pages without the local research executor')
+    parser.add_argument('--output', type=Path, default=BASE / 'web')
     args = parser.parse_args()
-    output = BASE / 'web/index.html'
-    page = build_page()
-    if args.check:
-        if not output.exists() or output.read_text(encoding='utf-8') != page:
-            parser.exit(1, '页面快照需更新，请执行 python3 build.py\n')
-        print('页面快照与匿名案例、模板一致。')
-    else:
-        output.parent.mkdir(exist_ok=True)
-        output.write_text(page, encoding='utf-8')
-        print('已生成 web/index.html。')
+    for path, page in build_pages(args.static).items():
+        output = args.output / path
+        if args.check:
+            if not output.exists() or output.read_text(encoding='utf-8') != page:
+                parser.exit(1, '页面快照需更新，请执行 python3 build.py\n')
+        else:
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_text(page, encoding='utf-8')
+    print('通用首页与研究示例快照一致。' if args.check else '已生成通用首页与独立研究示例。')
 
 
 if __name__ == '__main__':

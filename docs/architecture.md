@@ -10,12 +10,13 @@
 
 | 模块 | 文件 | 责任 |
 |---|---|---|
-| 页面 | `web/index.html` | 首页输入、结果视图、筛选、下载、轮询任务状态 |
+| 通用首页 | `web/index.html` | 主题输入、研究状态与可选示例入口；不预载历史评论 |
+| 研究示例 | `web/examples/cockpit.html` | 已有原声、需求洞察、简短结论与下载；明确标为既有示例 |
 | 入口 | `app.py`、`Dockerfile`、`compose.yaml` | Python直接运行或Docker启动，默认发布8780端口 |
 | 任务服务 | `research-core/scripts/serve.py` | 校验请求，建立独立项目，调用Codex，返回完成／空结果／失败状态 |
 | 研究工作流 | `research-core/SKILL.md`、`references/` | 采集、审核、AI分析、证据追溯和MRD规则 |
 | 渲染器 | `research-core/scripts/render.py` | 校验字段、ID、来源、日期和需求证据关联，生成内嵌数据的HTML |
-| 案例构建 | `build.py` | 使用规范化匿名案例重建首页快照，检查构建一致性 |
+| 页面构建 | `build.py` | 分别生成通用首页与匿名案例，检查构建一致性；公开静态模式不请求本机API |
 
 渲染器不执行模型推理或联网采集。语义分析和文档由宿主AI执行；渠道可用性以每次实际采集结果为准。
 

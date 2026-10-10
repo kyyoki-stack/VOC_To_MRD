@@ -2,9 +2,17 @@
 
 ## 静态结果展示
 
-`web/index.html`内嵌案例数据，不依赖远程字体、CDN或前端构建工具。可以直接打开，也可以把`web/`发布到静态托管服务。
+`web/index.html`是通用首页，不嵌入既有评论、洞察或报告。`web/examples/cockpit.html`是独立的匿名座舱案例，包含多个品牌与渠道，并明确标为既有示例。页面不依赖远程字体、CDN或前端构建工具。
 
-静态托管支持查看、筛选、证据展开和下载。提交首页查询需要`/api/research`后端；后端不存在时页面会明确提示。此次GitHub发布仅发布项目源码和匿名案例，没有启用GitHub Pages或部署云端采集服务。
+公开静态发布先执行`python3 build.py --static --output dist`。只托管`dist/`，该模式会直接提示在线采集服务尚未配置，不向不存在的本机API发送研究请求。示例支持原声筛选、证据展开和报告下载。
+
+本机或Docker运行使用`python3 build.py`生成的`web/`；配置执行器后才可提交研究。公开网站发布不等于已经部署云端采集与AI执行服务。
+
+## GitHub Pages发布
+
+`.github/workflows/pages.yml`在main推送后检查构建与证据契约，仅上传`python3 build.py --static --output dist`生成的两个页面。完整仓库、研究运行目录和本机执行器不作为网站产物上传。公开入口与示例使用相对链接，兼容仓库子路径。
+
+GitHub Pages是静态展示层；在线采集、归类、AI洞察、报告和MRD生成仍需另外部署研究服务。
 
 ## Docker网页服务
 

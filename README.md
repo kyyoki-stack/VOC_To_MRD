@@ -15,7 +15,7 @@
 
 ## 输入
 
-在首页“用户之声”气泡中输入**产品和关注的主题**，按回车发起调研。例如：
+在首页“用户原声”气泡中输入**产品和关注的主题**，按回车发起调研。例如：
 
 > 理想同学车载语音助手，重点研究导航理解、连续指令和使用中的好评与吐槽。
 
@@ -87,7 +87,7 @@ cd VOC_To_MRD
 python3 app.py
 ```
 
-打开 `http://127.0.0.1:8780`。首页已带匿名案例；输入新主题后会在独立目录执行研究，完成后提供本次结果链接。端口可调整：
+打开 `http://127.0.0.1:8780`。首页为通用研究入口；点击“查看座舱研究示例”才会打开既有案例。配置执行器后，输入新主题会在独立目录执行研究，完成后提供本次结果链接。端口可调整：
 
 ```bash
 python3 app.py --port 8781
@@ -95,7 +95,7 @@ python3 app.py --port 8781
 
 本项目内置研究工作流，不要求另外安装 Skill。账号登录、模型权限和采集连接器需要在本机准备好；只有 Python 也能浏览页面，但不能运行真实采集。不要将 Cookie、Token 或登录资料提交到仓库。
 
-静态查看可以直接打开 `web/index.html`。静态托管能够查看案例、筛选和下载；**GitHub 仓库或 GitHub Pages 本身不会执行 AI 调研**。
+静态查看可以直接打开 `web/index.html`，示例位于 `web/examples/cockpit.html`。公开托管使用 `python3 build.py --static --output dist` 生成不调用本机API的页面。静态托管能够查看案例、筛选和下载；**GitHub 仓库或 GitHub Pages 本身不会执行 AI 调研**。
 
 ## 案例与证据
 
@@ -109,7 +109,8 @@ python3 app.py --port 8781
 VOC_To_MRD/
 ├── app.py                    # 本地网站入口
 ├── build.py                  # 从匿名案例重建页面
-├── web/index.html            # 当前可浏览页面
+├── web/index.html            # 通用首页
+├── web/examples/cockpit.html # 可选匿名研究示例
 ├── research-core/            # 工作流、字段规范、模板与本地后端
 ├── examples/cockpit/          # 匿名案例的CSV与Markdown报告
 ├── docs/                     # 架构、运行边界与部署说明

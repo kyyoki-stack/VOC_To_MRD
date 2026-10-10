@@ -17,7 +17,7 @@ spec.loader.exec_module(build)
 class ProjectTests(unittest.TestCase):
     def test_page_snapshot_and_findings_reference_real_case_records(self):
         page = build.build_page()
-        self.assertEqual(page, (BASE / 'web/index.html').read_text(encoding='utf-8'))
+        self.assertEqual(page, (BASE / 'web/examples/cockpit.html').read_text(encoding='utf-8'))
         rows = json.loads(re.search(r'<script id="data" type="application/json">(.*?)</script>', page, re.S)[1])
         reports = json.loads(re.search(r'<script id="report-data" type="application/json">(.*?)</script>', page, re.S)[1])
         ids = {row['sample_id'] for row in rows if row['relevance'] == '相关'}
@@ -26,6 +26,20 @@ class ProjectTests(unittest.TestCase):
             self.assertFalse(set(finding['evidence_ids'].split(',')) - ids)
         self.assertNotIn('阅读 MRD', page)
         self.assertIn('id="report-findings"', page)
+
+    def test_homepage_and_public_mode_do_not_reuse_example_results(self):
+        pages = build.build_pages(static=True)
+        home, example = pages['index.html'], pages['examples/cockpit.html']
+        for key in ['data', 'need-data', 'audit-data']:
+            payload = json.loads(re.search(r'<script id="' + key + r'" type="application/json">(.*?)</script>', home, re.S)[1])
+            self.assertEqual(payload, [])
+        self.assertNotIn('魏牌', home)
+        self.assertIn('data-page="home"', home)
+        self.assertIn('data-execution="static"', home)
+        self.assertIn('href="examples/cockpit.html#voices"', home)
+        self.assertIn('既有匿名座舱数据', example)
+        self.assertIn('href="../index.html"', example)
+        self.assertEqual(build.build_homepage(), (BASE / 'web/index.html').read_text(encoding='utf-8'))
 
     def test_missing_evidence_is_rejected_before_rendering(self):
         with tempfile.TemporaryDirectory() as directory:

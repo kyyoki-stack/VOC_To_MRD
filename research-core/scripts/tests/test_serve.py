@@ -38,6 +38,16 @@ class BackendTests(unittest.TestCase):
             with self.assertRaises(HTTPError) as error: self.post({'topic': topic})
             self.assertEqual(error.exception.code, 400)
 
+    def test_example_route_is_explicit_and_other_files_stay_private(self):
+        directory = self.root / 'examples'
+        directory.mkdir()
+        (directory / 'cockpit.html').write_text('anonymous example')
+        (directory / 'private.txt').write_text('private fixture')
+        self.assertEqual(urlopen(self.url + '/examples/cockpit.html').read(), b'anonymous example')
+        with self.assertRaises(HTTPError) as error:
+            urlopen(self.url + '/examples/private.txt')
+        self.assertEqual(error.exception.code, 404)
+
     def test_cross_origin_and_missing_token_rejected(self):
         for kwargs in [{'token': ''}, {'origin': 'https://external.example'}]:
             with self.assertRaises(HTTPError) as error: self.post({'topic': '测试主题'}, **kwargs)
