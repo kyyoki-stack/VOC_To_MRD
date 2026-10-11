@@ -1,17 +1,13 @@
-# Paid, always-on single instance. Confirm the displayed bill before creating it.
+# Free trial: sleeps on idle; local jobs and results are temporary.
 services:
   - type: web
     name: voc-to-mrd
     runtime: docker
-    plan: 0.5c-512mb
+    plan: free
     region: singapore
     numInstances: 1
     healthCheckPath: /healthz
     autoDeployTrigger: 'off'
-    disk:
-      name: research-data
-      mountPath: /data/research-runs
-      sizeGB: 1
     envVars:
       - key: VOC_APP_MODE
         value: cloud
