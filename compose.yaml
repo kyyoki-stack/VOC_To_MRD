@@ -12,6 +12,7 @@ services:
       DEEPSEEK_MODEL: "${DEEPSEEK_MODEL:-deepseek-v4-pro}"
       VOC_COLLECTOR_URL: "${VOC_COLLECTOR_URL:-}"
       VOC_COLLECTOR_TOKEN: "${VOC_COLLECTOR_TOKEN:-}"
+      VOC_COLLECTOR: "${VOC_COLLECTOR:-}"
     volumes:
       - research-data:/data
     restart: unless-stopped

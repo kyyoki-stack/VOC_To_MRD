@@ -20,6 +20,16 @@ def main():
     sys.path.insert(0, str(scripts))
     from settings import load_env
     load_env(base / '.env')
+    if os.environ.get('VOC_APP_MODE') == 'cloud':
+        port = int(os.environ.get('PORT', str(args.port)))
+        if not 1 <= port <= 65535:
+            parser.error('PORT 必须为1–65535')
+        os.environ.setdefault('VOC_RUNS_DIR', str(args.runs.resolve()))
+        # One process owns the durable queue. Never expose the local Codex executor.
+        os.execv(sys.executable, [sys.executable, '-m', 'gunicorn', '--bind', f'0.0.0.0:{port}',
+                                 '--workers', '1', '--threads', '8', '--timeout', '60',
+                                 '--graceful-timeout', '30', '--chdir', str(base),
+                                 'cloud_app:create_app()'])
     sys.argv = [str(scripts / 'serve.py'), '--root', str(base / 'web'),
                 '--runs', str(args.runs.resolve()), '--port', str(args.port), '--host', args.host]
     if args.public_port is not None:

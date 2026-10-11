@@ -1,0 +1,35 @@
+# Paid, always-on single instance. Confirm the displayed bill before creating it.
+services:
+  - type: web
+    name: voc-to-mrd
+    runtime: docker
+    plan: 0.5c-512mb
+    region: singapore
+    numInstances: 1
+    healthCheckPath: /healthz
+    autoDeployTrigger: 'off'
+    disk:
+      name: research-data
+      mountPath: /data/research-runs
+      sizeGB: 1
+    envVars:
+      - key: VOC_APP_MODE
+        value: cloud
+      - key: VOC_RESEARCH_BACKEND
+        value: deepseek
+      - key: VOC_RUNS_DIR
+        value: /data/research-runs
+      - key: DEEPSEEK_MODEL
+        value: deepseek-v4-pro
+      - key: DEEPSEEK_API_KEY
+        sync: false
+      - key: VOC_COLLECTOR
+        value: v2ex
+      - key: VOC_SESSION_SECRET
+        generateValue: true
+      - key: VOC_ACCESS_CODES
+        generateValue: true
+      - key: VOC_USER_DAILY_LIMIT
+        value: '3'
+      - key: VOC_GLOBAL_DAILY_LIMIT
+        value: '10'
