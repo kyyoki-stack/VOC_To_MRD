@@ -14,6 +14,7 @@ DEEPSEEK_API_KEY=在本机填写你的密钥
 DEEPSEEK_MODEL=deepseek-v4-pro
 VOC_COLLECTOR_URL=
 VOC_COLLECTOR_TOKEN=
+VOC_COLLECTOR=v2ex
 ```
 
 从 [DeepSeek 开放平台](https://platform.deepseek.com/) 创建 API 密钥并确认账户额度。不要将密钥发到聊天、写入前端、提交 GitHub，或放进镜像。`.env` 已被 Git 和 Docker 构建忽略；Compose 只在运行时向服务端传入。
@@ -27,7 +28,9 @@ python3 deepseek_tools.py check --live
 
 ## 2. 接入真实评论采集
 
-**DeepSeek 聊天 API 不提供本项目所需的平台评论采集。** 当前已实现采集服务适配接口，仓库尚未附带或部署该服务。没有采集服务时，网页提交会返回明确的未配置提示，不会制造评论或把历史案例作为新结果。
+**DeepSeek 聊天 API 不提供本项目所需的平台评论采集。** 仓库已包含 V2EX 公开评论连接器，新配置默认启用 `VOC_COLLECTOR=v2ex`；外部采集服务可替换它。来源不可达或没有相关评论时保留失败／空结果说明，不制造评论，也不复用历史案例。
+
+内置连接器通过 SOV2EX 发现讨论，再读取 V2EX 官方评论接口的正文。首轮最多4个主题，每个主题最多纳入8条候选评论，再由模型审核相关性；仅覆盖V2EX，不代表全网。主题中也可附上明确的公开V2EX讨论链接。无需额外购买采集服务，但云端真实可用性仍须单独验证。
 
 `VOC_COLLECTOR_URL` 需要填写你控制的 HTTPS 采集接口，可选的 `VOC_COLLECTOR_TOKEN` 通过服务端 Bearer 请求头发送。不要把平台搜索页或帖子地址填在这里。禁止使用带账号、查询参数或重定向的地址。
 
@@ -91,6 +94,6 @@ python3 deepseek_tools.py analyze --input /path/to/comments.json --topic '产品
 
 ## 公网部署现状
 
-GitHub Pages 仍是静态展示页，添加模型密钥不会让它自动运行后端。本机 Docker 配置不会同步到公网。要让线上回车执行新研究，还需部署评论采集服务与云端后端，配置运行时密钥、任务访问控制，再连接前端 API 地址。当前本机 Host/Origin 校验保留，不直接开放公网。
+GitHub Pages 仍是静态展示页，添加模型密钥不会让它自动运行后端。本机 Docker 配置不会同步到公网。要让线上回车执行新研究，需部署云端后端，启用内置连接器并配置运行时密钥和任务访问控制。现有 [Render免费部署配置](cloud-deployment.md) 将前端、采集器和API放在同一HTTPS地址，无需另建采集服务器。当前本机 Host/Origin 校验保留，不直接开放公网。
 
 代码测试使用合成数据和模拟响应；真实 DeepSeek 质量、渠道覆盖、耗时和公网完整流程需要有密钥与实际服务后另行验收。
